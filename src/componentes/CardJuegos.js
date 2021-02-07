@@ -21,7 +21,7 @@ import logo from "./path10.png";
 import { BrowserRouter as Router, Switch, Route, Link } from "react-router-dom";
 import TextField from '@material-ui/core/TextField';
 
-const url = "http://localhost:2000/consultarJuegos";
+const url = "http://54.173.141.2:2000/consultarJuegos";
 
 //Material UI estilo de card
 const useStyles = makeStyles((theme) => ({
