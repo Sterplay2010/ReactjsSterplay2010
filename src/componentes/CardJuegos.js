@@ -182,6 +182,7 @@ const Gogster = () => {
   );
 };
 
+
 const CardJuegos = () => {
   const classes = useStyles();
   return (
@@ -212,7 +213,7 @@ const CardJuegos = () => {
               >
                 <Link
                   style={{ color: "white", textDecoration: "none" }}
-                  to="/inicio"
+                  to="/gogster"
                 >
                   Gogster
                 </Link>
@@ -233,11 +234,14 @@ const CardJuegos = () => {
         </AppBar>
 
         <Switch>
-          <Route path="/inicio">
+          <Route path="/gogster">
             <Gogster />
           </Route>
           <Route path="/juegos">
             <Juegos />
+          </Route>
+          <Route path="/">
+            <Gogster />
           </Route>
         </Switch>
       </div>
