@@ -14,14 +14,15 @@ import Grid from "@material-ui/core/Grid";
 import AppBar from "@material-ui/core/AppBar";
 import Toolbar from "@material-ui/core/Toolbar";
 import IconButton from "@material-ui/core/IconButton";
-import InputBase from "@material-ui/core/InputBase";
-import SearchIcon from "@material-ui/icons/Search";
 import SportsEsportsIcon from "@material-ui/icons/SportsEsports";
 import logo from "./path10.png";
 import { BrowserRouter as Router, Switch, Route, Link } from "react-router-dom";
-import TextField from '@material-ui/core/TextField';
+import TextField from "@material-ui/core/TextField";
+import Snackbar from "@material-ui/core/Snackbar";
+import MuiAlert from "@material-ui/lab/Alert";
 
-const url = "http://54.173.141.2:2000/consultarJuegos";
+const url = "http://100.26.227.106:2000/consultarJuegos";
+const baseUrl = "http://100.26.227.106:2000/importar";
 
 //Material UI estilo de card
 const useStyles = makeStyles((theme) => ({
@@ -79,6 +80,154 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
+function Alert(props) {
+  return <MuiAlert elevation={6} variant="filled" {...props} />;
+}
+
+const AgregarJuego = () => {
+  const [titulo, setTitulo] = React.useState("");
+  const [descripcion, setDescripcion] = React.useState("");
+  const [link, setLink] = React.useState("");
+  const [imagen, setImagen] = React.useState("");
+  const [errorTitulo, setErrorTitulo] = React.useState(false);
+  const [errorDesc, seterrorDesc] = React.useState(false);
+  const [leyenda1, setLeyenda1] = React.useState("");
+  const [leyenda2, setLeyenda2] = React.useState("");
+  const [verificar, setVerificar] = React.useState(false);
+
+  const [state, setState] = React.useState({
+    open: false,
+    vertical: "top",
+    horizontal: "center",
+  });
+
+  const { vertical, horizontal, open } = state;
+
+  const handleClick = (newState) => () => {
+    if (titulo != "" && descripcion != "" && link != "" && imagen != "") {
+      setVerificar(false);
+      setState({ open: true, ...newState });
+      peticionPost();
+    } else {
+      setVerificar(true);
+      setState({ open: true, ...newState });
+    }
+  };
+
+  const handleClose = () => {
+    setState({ ...state, open: false });
+  };
+
+  const peticionPost = async () => {
+    await axios
+      .post(baseUrl, {
+        titulo: titulo,
+        descripcion: descripcion,
+        link: link,
+        imagen: imagen,
+      })
+      .then((response) => {
+        console.log("Listo....");
+      });
+  };
+
+  return (
+    <CssBaseline>
+      <Grid container direction="column" justify="center" alignContent="center">
+        <Typography
+          variant="overline"
+          style={{ marginTop: 10, alignSelf: "center", fontSize: 20 }}
+        >
+          Agregar un juego
+        </Typography>
+        <TextField
+          label="Título del juego"
+          variant="outlined"
+          error={errorTitulo}
+          multiline
+          helperText={leyenda1}
+          onChange={(e) => {
+            setTitulo(e.target.value);
+            if (titulo.length > 45) {
+              setErrorTitulo(true);
+              setLeyenda1("El título contiene mas de 45 carácteres.");
+            } else {
+              setErrorTitulo(false);
+              setLeyenda1("");
+            }
+          }}
+          style={{ margin: 20, alignSelf: "center", width: 450 }}
+        />
+        <TextField
+          label="Descripción del juego"
+          variant="outlined"
+          multiline
+          error={errorDesc}
+          helperText={leyenda2}
+          onChange={(e) => {
+            setDescripcion(e.target.value);
+            if (descripcion.length > 128) {
+              seterrorDesc(true);
+              setLeyenda2("La descripción contiene mas de 128 carácteres.");
+            } else {
+              seterrorDesc(false);
+              setLeyenda2("");
+            }
+          }}
+          style={{ margin: 20, alignSelf: "center", width: 450 }}
+        />
+        <TextField
+          label="Link del juego"
+          variant="outlined"
+          multiline
+          onChange={(e) => {
+            setLink(e.target.value);
+          }}
+          style={{ margin: 20, alignSelf: "center", width: 450 }}
+        />
+        <TextField
+          label="Link de imagen"
+          variant="outlined"
+          multiline
+          onChange={(e) => {
+            setImagen(e.target.value);
+          }}
+          style={{ margin: 20, alignSelf: "center", width: 450 }}
+        />
+        <Button
+          variant="contained"
+          style={{ margin: 20, alignSelf: "center", width: 250 }}
+          onClick={handleClick({ vertical: "bottom", horizontal: "left" })}
+        >
+          Agregar
+        </Button>
+      </Grid>
+
+      {verificar === false ? (
+        <Snackbar
+          anchorOrigin={{ vertical, horizontal }}
+          open={open}
+          key={vertical + horizontal}
+        >
+          <Alert onClose={handleClose} severity="success">
+            ¡Registro exitoso!
+          </Alert>
+        </Snackbar>
+      ) : (
+        <Snackbar
+          anchorOrigin={{ vertical, horizontal }}
+          open={open}
+          key={vertical + horizontal}
+        >
+          <Alert onClose={handleClose} severity="warning">
+            ¡Rellene todos los campos!
+          </Alert>
+        </Snackbar>
+      )}
+    </CssBaseline>
+  );
+};
+
 const Juegos = () => {
   const classes = useStyles();
 
@@ -98,6 +247,17 @@ const Juegos = () => {
     await peticionGet();
   }, []);
 
+
+  const peticionBorrar = async (id) =>{
+    const url = `http://100.26.227.106:2000/eliminar/${id}`;
+    await axios
+    .delete(url)
+    .then((response) =>{
+      console.log('Se borro con exito :D');
+      peticionGet();
+    })
+  }
+
   useEffect(() => {
     setlistaFiltrada(
       data.filter((juego) => {
@@ -106,19 +266,28 @@ const Juegos = () => {
     );
   }, [buscar, data]);
 
-
   return (
     <div>
       <CssBaseline />
       <Container fixed>
-      <Grid container direction="column" justify="center" alignContent="center">
-      <TextField onChange={(e) => setBuscar(e.target.value)} label="Buscar un juego" variant="outlined"  style={{margin:20, alignSelf:'center', width:350}} />
-      </Grid>
+        <Grid
+          container
+          direction="column"
+          justify="center"
+          alignContent="center"
+        >
+          <TextField
+            onChange={(e) => setBuscar(e.target.value)}
+            label="Buscar un juego"
+            variant="outlined"
+            style={{ margin: 20, alignSelf: "center", width: 350 }}
+          />
+        </Grid>
         <Grid container spacing={16} justify="center">
           {listaFiltrada.map((juego) => {
             return (
-              <Card className={classes.root}>
-                <CardActionArea>
+              <Card className={classes.root} style={{display:"flex", flexDirection:"column", height:"100%"}}>
+                <CardActionArea style={{display:"flex", flex:"1 0 auto", alignItems:"flex-end", justifyContent:"center", flexDirection:"column"}}>
                   <CardMedia
                     component="img"
                     alt={juego.titulo}
@@ -139,13 +308,12 @@ const Juegos = () => {
                     </Typography>
                   </CardContent>
                 </CardActionArea>
-                <CardActions >
-                  <Button
-                    size="small"
-                    href={juego.link}
-                    target="blank"
-                  >
+                <CardActions style={{display:"flex", justifyContent:"flex-start"}}>
+                  <Button size="small" variant="contained" color="primary" href={juego.link} target="blank">
                     COMPRAR
+                  </Button>
+                  <Button size="small" variant="contained" color="secondary" target="blank" onClick={() => peticionBorrar(juego.id)}>
+                    ELIMINAR
                   </Button>
                 </CardActions>
               </Card>
@@ -165,15 +333,15 @@ const Gogster = () => {
           src={logo}
           width="200"
           height="200"
-          style={{ alignSelf: "center", marginTop:30 }}
+          style={{ alignSelf: "center", marginTop: 30 }}
         />
-          <Typography variant="h4" style={{ marginTop:10, alignSelf:'center'}}>
+        <Typography variant="h4" style={{ marginTop: 10, alignSelf: "center" }}>
           GOGSTER
         </Typography>
         <Typography
           variant="subtitle1"
           paragraph
-          style={{alignSelf: "center" }}
+          style={{ alignSelf: "center" }}
         >
           Una página simple para juegos sin DRM
         </Typography>
@@ -182,13 +350,12 @@ const Gogster = () => {
   );
 };
 
-
 const CardJuegos = () => {
   const classes = useStyles();
   return (
     <Router>
       <div className={classes.barraRoot}>
-        <AppBar position="static" style={{background:'#FF8D33'}}>
+        <AppBar position="static" style={{ background: "#FF8D33" }}>
           <Toolbar>
             <IconButton
               edge="start"
@@ -218,6 +385,7 @@ const CardJuegos = () => {
                   Gogster
                 </Link>
               </Typography>
+
               <Typography
                 variant="overline"
                 style={{ alignSelf: "center", margin: 10 }}
@@ -227,6 +395,18 @@ const CardJuegos = () => {
                   to="/juegos"
                 >
                   Juegos
+                </Link>
+              </Typography>
+
+              <Typography
+                variant="overline"
+                style={{ alignSelf: "center", margin: 10 }}
+              >
+                <Link
+                  style={{ color: "white", textDecoration: "none" }}
+                  to="/agregar"
+                >
+                  Agregar
                 </Link>
               </Typography>
             </Grid>
@@ -240,6 +420,9 @@ const CardJuegos = () => {
           <Route path="/juegos">
             <Juegos />
           </Route>
+          <Route path="/agregar">
+            <AgregarJuego />
+          </Route>
           <Route path="/">
             <Gogster />
           </Route>
@@ -252,7 +435,6 @@ const CardJuegos = () => {
 export default CardJuegos;
 
 //<TextField label="Busca un juego" variant="filled" style={{margin:20, alignSelf:'center'}}/>
-
 
 /*
 
