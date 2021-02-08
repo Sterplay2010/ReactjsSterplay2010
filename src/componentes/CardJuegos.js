@@ -287,7 +287,7 @@ const Juegos = () => {
           {listaFiltrada.map((juego) => {
             return (
               <Card className={classes.root} style={{display:"flex", flexDirection:"column", height:"100%"}}>
-                <CardActionArea style={{display:"flex", flex:"1 0 auto", alignItems:"flex-end", justifyContent:"center", flexDirection:"column"}}>
+                <CardActionArea style={{display:"flex", flex:"1 0 auto", alignItems:"flex-start", justifyContent:"center", flexDirection:"column"}}>
                   <CardMedia
                     component="img"
                     alt={juego.titulo}
