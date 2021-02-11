@@ -16,25 +16,19 @@ import Toolbar from "@material-ui/core/Toolbar";
 import IconButton from "@material-ui/core/IconButton";
 import SportsEsportsIcon from "@material-ui/icons/SportsEsports";
 import logo from "./path10.png";
-import sad from "./sad.png";
+import face from "./sadface.png";
 import { BrowserRouter as Router, Switch, Route, Link } from "react-router-dom";
 import TextField from "@material-ui/core/TextField";
 import Snackbar from "@material-ui/core/Snackbar";
 import MuiAlert from "@material-ui/lab/Alert";
-<<<<<<< HEAD
-import Dialog from '@material-ui/core/Dialog';
-import DialogActions from '@material-ui/core/DialogActions';
-import DialogContent from '@material-ui/core/DialogContent';
-import DialogContentText from '@material-ui/core/DialogContentText';
-import DialogTitle from '@material-ui/core/DialogTitle';
+import Dialog from "@material-ui/core/Dialog";
+import DialogActions from "@material-ui/core/DialogActions";
+import DialogContent from "@material-ui/core/DialogContent";
+import DialogContentText from "@material-ui/core/DialogContentText";
+import DialogTitle from "@material-ui/core/DialogTitle";
 
 const url = "http://100.25.109.105:2000/consultarJuegos";
 const baseUrl = "http://100.25.109.105:2000/importar";
-=======
-
-const url = "http://100.26.227.106:2000/consultarJuegos";
-const baseUrl = "http://100.26.227.106:2000/importar";
->>>>>>> 53c0bb95dafd774d99d6fa35b3a282f8de4eb37b
 
 //Material UI estilo de card
 const useStyles = makeStyles((theme) => ({
@@ -249,7 +243,7 @@ const Juegos = () => {
 
   const [listaFiltrada, setlistaFiltrada] = useState([]);
 
-  const [open,setOpen] = React.useState(false);
+  const [open, setOpen] = React.useState(false);
 
   const [idJuego, setIdJuego] = React.useState(0);
 
@@ -276,7 +270,6 @@ const Juegos = () => {
     await peticionGet();
   }, []);
 
-<<<<<<< HEAD
   const peticionBorrar = async (id) => {
     const url = `http://100.25.109.105:2000/eliminar/${id}`;
     await axios.delete(url).then((response) => {
@@ -284,18 +277,6 @@ const Juegos = () => {
       peticionGet();
     });
   };
-=======
-
-  const peticionBorrar = async (id) =>{
-    const url = `http://100.26.227.106:2000/eliminar/${id}`;
-    await axios
-    .delete(url)
-    .then((response) =>{
-      console.log('Se borro con exito :D');
-      peticionGet();
-    })
-  }
->>>>>>> 53c0bb95dafd774d99d6fa35b3a282f8de4eb37b
 
   useEffect(() => {
     setlistaFiltrada(
@@ -315,33 +296,39 @@ const Juegos = () => {
           justify="center"
           alignContent="center"
         >
-<<<<<<< HEAD
+          <Dialog
+            open={open}
+            onClose={handleClose}
+            aria-labelledby="alert-dialog-title"
+            aria-describedby="alert-dialog-description"
+          >
+            <DialogTitle id="alert-dialog-title">
+              {"¿Está seguro de eliminar?"}
+            </DialogTitle>
+            <DialogContent>
+              <DialogContentText id="alert-dialog-description">
+                Recuerde que esta operación es irreversible.
+              </DialogContentText>
+            </DialogContent>
+            <DialogActions>
+              <Button
+                onClick={handleCloseTwo}
+                variant="contained"
+                color="secondary"
+              >
+                Cancelar
+              </Button>
+              <Button
+                onClick={handleClose}
+                variant="contained"
+                color="primary"
+                autoFocus
+              >
+                Aceptar
+              </Button>
+            </DialogActions>
+          </Dialog>
 
-
-      <Dialog
-        open={open}
-        onClose={handleClose}
-        aria-labelledby="alert-dialog-title"
-        aria-describedby="alert-dialog-description"
-      >
-        <DialogTitle id="alert-dialog-title">{"¿Está seguro de eliminar?"}</DialogTitle>
-        <DialogContent>
-          <DialogContentText id="alert-dialog-description">
-            Recuerde que esta operación es irreversible.
-          </DialogContentText>
-        </DialogContent>
-        <DialogActions>
-          <Button onClick={handleCloseTwo} variant="contained" color="secondary">
-            Cancelar
-          </Button>
-          <Button onClick={handleClose} variant="contained" color="primary" autoFocus>
-            Aceptar
-          </Button>
-        </DialogActions>
-      </Dialog>
-
-=======
->>>>>>> 53c0bb95dafd774d99d6fa35b3a282f8de4eb37b
           <TextField
             onChange={(e) => setBuscar(e.target.value)}
             label="Buscar un juego"
@@ -350,20 +337,28 @@ const Juegos = () => {
           />
         </Grid>
         <Grid container spacing={16} justify="center">
-          {listaFiltrada.length === 0 ? 
-          <Grid container direction="column" justify="center" alignContent="center">
-             <Typography variant="overline">No se encontro ningún resultado</Typography>
-          <img
-          src={sad}
-          width="200"
-          height="200"
-          style={{ alignSelf: "center", marginTop: 30 }}
-        />
-          </Grid>
-          :""}
+          {listaFiltrada.length === 0 ? (
+            <Grid
+              container
+              direction="column"
+              justify="center"
+              alignContent="center"
+            >
+              <Typography variant="overline">
+                No se encontro ningún resultado
+              </Typography>
+              <img
+                src={face}
+                width="200"
+                height="200"
+                style={{ alignSelf: "center", marginTop: 30 }}
+              />
+            </Grid>
+          ) : (
+            ""
+          )}
           {listaFiltrada.map((juego) => {
             return (
-<<<<<<< HEAD
               <Card
                 className={classes.root}
                 style={{
@@ -381,10 +376,6 @@ const Juegos = () => {
                     flexDirection: "column",
                   }}
                 >
-=======
-              <Card className={classes.root} style={{display:"flex", flexDirection:"column", height:"100%"}}>
-                <CardActionArea style={{display:"flex", flex:"1 0 auto", alignItems:"flex-start", justifyContent:"center", flexDirection:"column"}}>
->>>>>>> 53c0bb95dafd774d99d6fa35b3a282f8de4eb37b
                   <CardMedia
                     component="img"
                     alt={juego.titulo}
@@ -405,7 +396,6 @@ const Juegos = () => {
                     </Typography>
                   </CardContent>
                 </CardActionArea>
-<<<<<<< HEAD
                 <CardActions
                   style={{ display: "flex", justifyContent: "flex-start" }}
                 >
@@ -424,23 +414,15 @@ const Juegos = () => {
                     color="secondary"
                     target="blank"
                     onClick={() => {
-                      handleClickOpen()
-                      setIdJuego(juego.id)
+                      handleClickOpen();
+                      setIdJuego(juego.id);
                     }}
                   >
-=======
-                <CardActions style={{display:"flex", justifyContent:"flex-start"}}>
-                  <Button size="small" variant="contained" color="primary" href={juego.link} target="blank">
-                    COMPRAR
-                  </Button>
-                  <Button size="small" variant="contained" color="secondary" target="blank" onClick={() => peticionBorrar(juego.id)}>
->>>>>>> 53c0bb95dafd774d99d6fa35b3a282f8de4eb37b
                     ELIMINAR
                   </Button>
                 </CardActions>
               </Card>
             );
-            
           })}
         </Grid>
       </Container>
